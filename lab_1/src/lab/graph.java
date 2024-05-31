@@ -19,9 +19,8 @@ import java.util.Collections;
 
 public class graph {
     public static void main(String[] args) {
-        String filePath = "D:\\桌面\\软件工程\\lab_1\\test.txt";
-
-        //String filePath = "D:\\桌面\\软件工程\\lab_1\\test1.txt";
+        //String filePath = "D:\\桌面\\软件工程\\lab_1\\test.txt";
+        String filePath = "D:\\桌面\\软件工程\\lab_1\\test1.txt";
         Graph<String, DefaultWeightedEdge> graph = new SimpleWeightedGraph<>(DefaultWeightedEdge.class);
         int choice;
         try {
@@ -48,7 +47,8 @@ public class graph {
                             if (!graph.containsVertex(word1) || !graph.containsVertex(word2)) {//检查word1，2是否在图上
                                 System.out.println("No " + word1 + " or " + word2 + " in the graph!");
                             } else {System.out.println("No bridge words from " + word1 + " to " + word2 + "!");}
-                        } else {System.out.println("The bridge words from " + word1 + " to " + word2 + " are: " + bridgeWord);}
+                        } else {System.out.print("The bridge words from " + word1 + " to " + word2 + " are: ");
+                            for (String words : bridgeWord) System.out.print(words + " ");}
                         break;
                     }
                     case 4: {
@@ -76,6 +76,7 @@ public class graph {
                         break;
                     }
                     case 6:randomWalk(graph,"D:\\桌面\\软件工程\\lab_1\\test1.txt");break;
+                    //case 6:randomWalk(graph,"D:\\桌面\\软件工程\\lab_1\\test1.txt");break;
                     case 7:System.out.println("退出");System.exit(0);
                     default:System.out.println("无效的选择，请输入一个1到6之间的数");break;
                 }
@@ -130,12 +131,12 @@ public class graph {
     }
     private static String generateNewText(Graph<String, DefaultWeightedEdge> graph, String text) {
         StringBuilder modifiedText = new StringBuilder();
-        String[] words = text.split("\\s+"); // 分割输入文本为单词数组
+        String[] words = text.replaceAll("[^a-zA-Z\\s]", " ").toLowerCase().split("\\s+"); // 分割输入文本为单词数组
         for (int i = 0; i < words.length - 1; i++) {
             modifiedText.append(words[i]).append(" "); // 添加当前单词到modifiedText
             Set<String> bridgeWords = findBridgeWord(graph, words[i], words[i + 1]);
             if (!bridgeWords.isEmpty()) {//存在桥接词，使用迭代器随机选择一个插入
-                int random = (int) (Math.random() * bridgeWords.size());//产生0-size随机值
+                int random = (int) (Math.random() * bridgeWords.size());//产生0-size随机值(Math.random:0-1)
                 int count = 0;
                 for (String bridgeWord : bridgeWords) {
                     if (count++ == random) {modifiedText.append(bridgeWord).append(" ");break;}
@@ -149,7 +150,7 @@ public class graph {
         Set<String> visited = new HashSet<>();
         Queue<NodeInfo> queue = new LinkedList<>();
         Map<String, String> predecessor = new HashMap<>();
-        Map<String, Double> weightMap = new HashMap<>();//保存权重，键--string
+        Map<String, Double> weightMap = new HashMap<>();//保存权重
         visited.add(startWord);
         queue.add(new NodeInfo(startWord, null, 0.0)); // 初始化队列，起始节点的权重为0
         predecessor.put(startWord, null);
@@ -176,7 +177,7 @@ public class graph {
                 }
             }
         }
-        return Collections.emptyList(); // 如果没有路径，则返回空列表
+        return Collections.emptyList(); // 如果没有路径，则返回空
     }
     private static List<String> buildPath(Map<String, String> predecessor, String endWord) { //根据前驱节点映射构建路径
         List<String> path = new ArrayList<>();
@@ -202,42 +203,37 @@ public class graph {
         try (Scanner scanner = new Scanner(Files.newInputStream(Path.of(filePath)))) {
             // 读取文件并分割成单词，同时转换为小写
             while (scanner.hasNext()) {
-                String word = scanner.next().toLowerCase();
-                // 移除单词中的特殊字符
-                word = word.replaceAll("[^a-z]", "");
-                if (!word.isEmpty()) {
-                    allWords.add(word);
-                }
+                String word = scanner.next().toLowerCase().replaceAll("[^a-z]", "");// 移除单词中的特殊字符
+                if (!word.isEmpty()) {allWords.add(word);}
             }
-            // 从列表中随机选择一个单词作为起始点
-            Random random = new Random();
+            Random random = new Random(); // 从列表中随机选择一个单词作为起始点
             String startNode = allWords.get(random.nextInt(allWords.size()));
             if (!graph.containsVertex(startNode)) {
-                System.out.println("所选的起始点为 "+startNode);
+                System.out.println("所选的起始点为 " + startNode);
                 System.out.println("所选的起始点不在图中");
                 return;
             }
             if (startNode == null) {System.out.println("图是空的");return;}
-            Set<String> visitedNodes = new HashSet<>();// 用于存储访问过的边
-            Map<DefaultWeightedEdge, Boolean> visitedEdges = new HashMap<>();
-            StringBuilder walkPath = new StringBuilder(startNode);
-            List<String> walk = new ArrayList<>();  // 用于存储随机游走的路径
+
+            Map<DefaultWeightedEdge, Boolean> visitedEdges = new HashMap<>();// 用于存储访问过的边
+            StringBuilder walkPath = new StringBuilder(); // 用于存储随机游走的路径输出到控制台
+            List<String> walk = new ArrayList<>();  // 用于存储随机游走的路径到txt文件
+            walkPath.append(startNode);
             walk.add(startNode);
             String currentNode = startNode;// 当前节点
             while (true) {
-                List<DefaultWeightedEdge> unvisitedEdges = new ArrayList<>();// 选择一个随机的未访问的出边
-                for (DefaultWeightedEdge edge : graph.outgoingEdgesOf(currentNode)) {
+                List<DefaultWeightedEdge> unvisitedEdges = new ArrayList<>();
+                for (DefaultWeightedEdge edge : graph.outgoingEdgesOf(currentNode)) {// 获得未访问的出边集合
                     if (!visitedEdges.containsKey(edge)) {unvisitedEdges.add(edge);}
                 }
                 if (unvisitedEdges.isEmpty()) {break;} // 如果没有出边，结束游走
                 DefaultWeightedEdge edge = unvisitedEdges.get(new Random().nextInt(unvisitedEdges.size()));
-                if(!graph.getEdgeTarget(edge).toString().equals(currentNode)) {//测试的时候不知道为什么出现new，new重复
+                if (!graph.getEdgeTarget(edge).toString().equals(currentNode)) {//测试的时候不知道为什么出现new，new重复
                     String nextNode = graph.getEdgeTarget(edge).toString();
                     visitedEdges.put(edge, true);// 标记边为已访问
-                    visitedNodes.add(currentNode);
                     currentNode = nextNode;// 移动到下一个节点
                     walk.add(currentNode);
-                    walkPath.append(" -> ").append(currentNode);
+                    walkPath.append(" -> "+currentNode);
                 }
             }
             System.out.println("随机游走路径: " + walkPath);// 输出游走路径
@@ -245,11 +241,12 @@ public class graph {
                 Path path = Path.of("D:\\桌面\\软件工程\\lab_1\\walk.txt");
                 Files.write(path, walk);
                 System.out.println("随机游走已写入文件");
-            } catch (IOException e) {System.err.println("错误的写入: " + e.getMessage());}
+            } catch (IOException e) {
+                System.err.println("错误的写入: " + e.getMessage());
+            }
         } catch (IOException e) {
             System.err.println("错误的文件： " + e.getMessage());
         }
-
     }
     private static int getInt(Scanner scanner) {
         System.out.println("输入你的选择 (2-7): ");

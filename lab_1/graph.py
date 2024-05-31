@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 # 初始化一个有向图
 G = nx.DiGraph()
 
-# 模拟您提供的文本格式数据
+# 模拟提供的文本格式数据
 text_lines = [
 "to -> explore (Weight: 1.0)",
 "explore -> strange (Weight: 1.0)",
