@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.Collections;
-
+//修改3e3e
 public class graph {
     public static void main(String[] args) {
         //String filePath = "D:\\桌面\\软件工程\\lab_1\\test.txt";
@@ -24,7 +24,7 @@ public class graph {
         Graph<String, DefaultWeightedEdge> graph = new SimpleWeightedGraph<>(DefaultWeightedEdge.class);
         int choice;
         try {
-            graph = buildGraph(filePath, graph); // 通过传入文档名的串，返回创建的图
+            graph = buildGraph(filePath, graph);// 通过传入文档名的串，返回创建的图
             //printGraph(graph); // 打印图的内容
             Scanner scanner = new Scanner(System.in); // 创建Scanner对象用于获取输入
             while (true) { // 使用while循环允许多次选择功能
@@ -33,7 +33,7 @@ public class graph {
                 System.out.println("3.计算桥接词");
                 System.out.println("4.根据桥接词生成新文本");
                 System.out.println("5.计算两个词直接的最短路");
-                System.out.println("6.随机游走");
+                System.out.println("6.随机游走"); 
                 System.out.println("7.退出");
                 choice = getInt(scanner);
                 switch (choice) {
