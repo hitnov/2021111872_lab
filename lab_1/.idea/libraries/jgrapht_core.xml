@@ -7,6 +7,8 @@
       <root url="jar://$MAVEN_REPOSITORY$/org/apfloat/apfloat/1.10.1/apfloat-1.10.1.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ideaLibSources/jgrapht-core-1.5.2-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>
