@@ -9,8 +9,6 @@
       <root url="jar://$MAVEN_REPOSITORY$/com/github/vlsi/mxgraph/jgraphx/4.2.2/jgraphx-4.2.2.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES>
-      <root url="jar://$USER_HOME$/.ideaLibSources/jgrapht-core-1.5.2-sources.jar!/" />
-    </SOURCES>
+    <SOURCES />
   </library>
 </component>
